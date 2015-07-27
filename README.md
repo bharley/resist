@@ -1,4 +1,7 @@
 # Resist
+
+[![Build Status](https://img.shields.io/travis/bharley/resist.svg?style=flat-square)](https://travis-ci.org/bharley/resist)
+
 A websocket version of [The Resistance].
 
 ## Setup
