@@ -1,12 +1,15 @@
 # Resources used by both the server and client
 class SharedResources
   STATE:
-    SETUP:           'setup'
-    TEAM_SELECT:     'team select'
-    TEAM_VOTE:       'team vote'
-    POST_TEAM_VOTE:  'post team vote'
-    MISSION:         'mission'
-    MISSION_OUTCOME: 'mission outcome'
+    SETUP:          'setup'
+    TEAM_SELECT:    'team select'
+    TEAM_VOTE:      'team vote'
+    POST_TEAM_VOTE: 'post team vote'
+    MISSION:        'mission'
+    POST_MISSION:   'post mission'
+
+  # Time that post rounds should last
+  INTERMISSION: 10000
 
   # The number of spies a game should have given the player count
   spyCount: (playerCount) -> Math.ceil(playerCount / 3)

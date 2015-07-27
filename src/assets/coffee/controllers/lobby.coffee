@@ -9,7 +9,7 @@ angular.module('resist').controller 'LobbyController', [
       $scope.$on 'connected', (event, playerId) =>
         $timeout => @playerId = playerId
 
-      $scope.$on 'players change', (event, players) =>
+      $scope.$on 'players.change', (event, players) =>
         $timeout =>
           @players = players
           @ready = @players[@playerId]?.ready

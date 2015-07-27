@@ -1,31 +1,14 @@
 <h1 class="text-center">The Resistance</h1>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th colspan="2">Players</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="player in game.players">
-      <td>
-        <i class="fa fa-fw" ng-class="{'fa-user': player.role === 'resistance', 'fa-user-secret': player.role === 'spy'}"></i>
-        {{ player.name }}
-        <i class="fa fa-fw" ng-class="{'fa-star': player.leader}"></i>
-        <span class="text-muted" ng-if="player.id === game.playerId">(You)</span>
-      </td>
-      <td>
-        <button type="button" ng-click="game.pickMember(player.id)" class="btn btn-xs" ng-show="game.isLeader() && (player.onMission || !game.teamFull()) && game.state === game.shared.STATE.TEAM_SELECT" ng-class="{'btn-primary': !player.onMission, 'btn-default': player.onMission}">
-          {{ player.onMission ? 'Remove from' : 'Put on' }} Mission
-        </button>
-        <span class="label label-primary" ng-show="player.onMission && (!game.isLeader() || game.state !== game.shared.STATE.TEAM_SELECT)">On Mission</span>
-        <span class="label" ng-show="player.vote" ng-class="{'label-success': player.vote === true || player.vote === 'accept', 'label-danger': player.vote === 'reject'}">
-          {{ player.vote === true ? 'Voted' : (player.vote === 'accept' ? 'Accepted' : 'Rejected') }}
-        </span>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<player-table players="game.players">
+  <button type="button" ng-click="game.pickMember(player.id)" class="btn btn-xs" ng-show="game.isLeader() && (player.onMission || !game.teamFull()) && game.state === game.shared.STATE.TEAM_SELECT" ng-class="{'btn-primary': !player.onMission, 'btn-default': player.onMission}">
+    {{ player.onMission ? 'Remove from' : 'Put on' }} Mission
+  </button>
+  <span class="label label-primary" ng-show="player.onMission && (!game.isLeader() || game.state !== game.shared.STATE.TEAM_SELECT)">On Mission</span>
+  <span class="label" ng-show="player.vote" ng-class="{'label-success': player.vote === true || player.vote === 'accept', 'label-danger': player.vote === 'reject'}">
+    {{ player.vote === true ? 'Voted' : (player.vote === 'accept' ? 'Accepted' : 'Rejected') }}
+  </span>
+</player-table>
 
 <button type="button" ng-click="game.lockTeam()" class="btn btn-block btn-lg" ng-show="game.isLeader() && game.state === game.shared.STATE.TEAM_SELECT" ng-disabled="!game.teamFull()">
   <span ng-show="game.teamFull()">
@@ -36,28 +19,7 @@
   </span>
 </button>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th ng-repeat="i in game.getRange(5)">{{ i }}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Votes</th>
-      <td ng-repeat="i in game.getRange(5)">
-        <i class="fa fa-fw" ng-class="{'fa-times-circle': i <= game.votes}"></i>
-      </td>
-    </tr>
-    <tr>
-      <th>Mission</th>
-      <td ng-repeat="i in game.getRange(5)">
-        <i class="fa fa-fw"></i>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<score-board />
 
 <h3 ng-show="game.showTip()">Tip</h3>
 <div ng-show="game.state === game.shared.STATE.TEAM_SELECT">

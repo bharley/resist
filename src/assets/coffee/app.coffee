@@ -21,21 +21,31 @@ app = angular.module('resist', ['ui.router', 'ui.bootstrap']).config [
         url:         '^/'
         templateUrl: 'lobby.html'
         controller:  'LobbyController as lobby'
-        options:
-          title: 'Game Lobby'
 
-      # Game
-      .state 'game',
-        templateUrl: 'game.html'
-        controller:  'GameController as game'
-        options:
-          title: 'Game'
+      # Game - Phase one
+      .state 'game-team-select',
+        templateUrl: 'game-1.html'
+        controller:  'GamePhaseOneController as game'
 
-      # 404 state
-      .state '404',
-        templateUrl: '404.html'
-        options:
-          title: 'Page not found'
+      # Game - Phase two
+      .state 'game-team-vote',
+        templateUrl: 'game-2.html'
+        controller:  'GamePhaseTwoController as game'
+
+      # Game - Phase three
+      .state 'game-post-team-vote',
+        templateUrl: 'game-3.html'
+        controller:  'GamePhaseThreeController as game'
+
+      # Game - Phase four
+      .state 'game-mission',
+        templateUrl: 'game-4.html'
+        controller:  'GamePhaseFourController as game'
+
+      # Game - Phase five
+      .state 'game-post-mission',
+        templateUrl: 'game-5.html'
+        controller:  'GamePhaseFiveController as game'
 
     # Adds the 'success' and 'error' convenience methods that the $http promises have
     $provide.decorator '$q', [
@@ -61,7 +71,10 @@ app = angular.module('resist', ['ui.router', 'ui.bootstrap']).config [
 ]
 
 app.run [
-  '$rootScope', '$state', 'GameClient',
-  ($rootScope,   $state,   game) ->
-    # We pop the game server in here to ensure it is loaded immediately
+  '$rootScope', '$state', '$modalStack', 'GameClient',
+  ($rootScope,   $state,   $modalStack,   game) ->
+
+    # Look for state changes to close out our modals
+    $rootScope.$on '$stateChangeStart', ->
+      $modalStack.dismissAll()
 ]

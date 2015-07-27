@@ -1,0 +1,23 @@
+<h1 class="text-center">The Resistance</h1>
+
+<player-table>
+  <span class="label label-success" ng-show="player.vote === 'accept'"><i class="fa fa-fw fa-check-circle"></i></span>
+  <span class="label label-danger" ng-show="player.vote === 'reject'"><i class="fa fa-fw fa-times-circle"></i></span>
+  <span class="label label-primary" ng-show="player.onMission">On Mission</span>
+</player-table>
+
+<score-board></score-board>
+
+<h3 ng-show="game.voteSuccess !== null">Tip</h3>
+<div ng-show="game.voteSuccess === true">
+  <p>
+    The vote has succeeded and the selected team is going on the mission. The mission will begin in roughly
+    {{ game.intermission }} seconds.
+  </p>
+</div>
+<div ng-show="game.voteSuccess === false">
+  <p>
+    The vote has failed and the selected team will not be going on the mission. The next leader will be chosen
+    in about {{ game.intermission }} seconds.
+  </p>
+</div>

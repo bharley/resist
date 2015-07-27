@@ -19,6 +19,9 @@ class Player extends SocketProps
     @onMission = false
     @vote      = false
 
+  # Helper functions
+  isSpy: => @role is 'spy'
+
   # Socket helpers
   emit: (args...) => @_socket.emit args...
   broadcast: (args...) => @_socket.broadcast.emit args...

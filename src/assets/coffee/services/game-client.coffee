@@ -13,27 +13,38 @@ angular.module('resist').factory 'GameClient', [
       @state = shared.STATE.SETUP
       @mission = 1
       @votes = 0
+      @lastVoteResult = null
+      @roundWins = []
 
       @setupLobby()
 
       # Listen for changes to game mode
-      io.on 'game/start', (state) =>
+      handleStateChange = (state) =>
         @state = state
-        $state.go 'game'
-
-      io.on 'game/state', (state) =>
-        @state = state
-        $rootScope.$broadcast 'state change', @state
+        $state.go 'game-' + state.replace(/ /g, '-').toLowerCase()
         console.log "Game is changing states: #{state}"
 
-      io.on 'game/vote-result', (result) ->
-        $rootScope.$broadcast 'vote result', result
+      io.on 'game/start', handleStateChange
+      io.on 'game/state', handleStateChange
+
+      io.on 'game/vote-result', (result) =>
+        @votes++
+        @lastVoteResult = result
+        $rootScope.$broadcast 'vote.result', result
+
+      io.on 'game/mission-vote', ({mission, vote}) =>
+        @mission = mission
+        @votes = vote
 
       # Listen for leadership changes
       io.on 'player/new-leader', (playerId) =>
         for id, player of @players
           player.leader = id is playerId
         @playersUpdated()
+
+      # Accept updates to the scores
+      io.on 'game/score', (wins) =>
+        @roundWins = wins
 
       # Listen for changes to player data
       io.on 'player/patch', ({playerId, delta}) =>
@@ -66,7 +77,7 @@ angular.module('resist').factory 'GameClient', [
 
     # Tells the world that the player list has changed in some way
     playersUpdated: =>
-      $rootScope.$broadcast 'players change', @players
+      $rootScope.$broadcast 'players.change', @players
 
     # Tell the server we want to change our name
     changeName: (name) ->
@@ -97,14 +108,25 @@ angular.module('resist').factory 'GameClient', [
       @players[@playerId].vote = if accept then 'accept' else 'reject'
       io.emit 'game/team-vote', accept
 
+    # Tell the server what we did during the mission
+    missionReport: (success) =>
+      return if !@isOnMission()
+      io.emit 'game/mission-report', success
+
     # Whether or not this player is a spy
     isSpy: => @players[@playerId]?.role is 'spy'
 
     # Whether or not this player is the current leader
     isLeader: => !!@players[@playerId]?.leader
 
+    # Whether or not this player is on the mission
+    isOnMission: => !!@players[@playerId]?.onMission
+
     # The team size this mission needs
     teamSize: => shared.teamSize Object.keys(@players).length, @mission
+
+    # The number of seconds the intermission will last
+    intermission: -> shared.INTERMISSION / 1000
 
     # The current team
     getTeam: =>

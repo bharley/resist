@@ -1,0 +1,36 @@
+<h1 class="text-center">The Resistance</h1>
+
+<player-table>
+  <button type="button" ng-click="game.pickMember(player.id)" class="btn btn-xs" ng-show="game.isLeader() && (player.onMission || !game.teamFull())" ng-class="{'btn-primary': !player.onMission, 'btn-default': player.onMission}">
+    {{ player.onMission ? 'Remove from' : 'Put on' }} Mission
+  </button>
+  <span class="label label-primary" ng-show="player.onMission && !game.isLeader()">On Mission</span>
+</player-table>
+
+<button type="button" ng-click="game.lockTeam()" class="btn btn-block btn-lg" ng-show="game.isLeader()" ng-disabled="!game.teamFull()">
+  <span ng-show="game.teamFull()">
+    Lock Team
+  </span>
+  <span ng-show="!game.teamFull()">
+    Pick {{ game.teamSize() - game.getTeam().length }} more mission member{{ game.teamSize() - game.getTeam().length === 1 ? '' : 's' }}
+  </span>
+</button>
+
+<score-board></score-board>
+
+<h3>Tip</h3>
+<div ng-show="game.isLeader()">
+  <p>
+    You are the leader for this mission. It's your job to build a team of {{ game.teamSize() }} resistence
+    members to make a run at the Imperial government.
+  </p>
+  <p ng-show="!game.isSpy()">
+    Try to assemble a team without spies!
+  </p>
+</div>
+<div ng-show="!game.isLeader()">
+  <p>
+    Your leader is currently assembling a team to go on the next mission against the Imperial government.
+    After he or she does so, you will be given a chance to vote on the team.
+  </p>
+</div>

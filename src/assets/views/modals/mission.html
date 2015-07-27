@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h3 class="modal-title">Mission</h3>
+</div>
+<div class="modal-body" ng-show="modal.isSpy">
+  <p>
+    Now is the opportunity to sabotage the rebellion! Choose whether or not you want their
+    mission to succeed.
+  </p>
+  <p>
+    Sabotaging the mission will help the empire, but it may reveal your identity. Proceed at
+    your discretion.
+  </p>
+</div>
+<div class="modal-body" ng-show="!modal.isSpy">
+  <p>
+    As a member of the resistance, you try your hardest and complete your assigned task for
+    the mission. Now you need to report your success in to the resistance.
+  </p>
+  <p style="font-style: italic;">
+    Only spies can choose to fail a mission.
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="submit" class="btn btn-danger" ng-click="modal.fail()" ng-class="{'disabled': !modal.isSpy}">
+    <i class="fa fa-fw fa-times-circle"></i>
+    Fail
+  </button>
+  <button type="submit" class="btn btn-primary" ng-click="modal.success()">
+    <i class="fa fa-fw fa-check-circle"></i>
+    Success
+  </button>
+</div>

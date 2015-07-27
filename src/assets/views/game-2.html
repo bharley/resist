@@ -1,0 +1,20 @@
+<h1 class="text-center">The Resistance</h1>
+
+<player-table>
+  <span class="label label-default" ng-show="!player.vote"><i class="fa fa-fw fa-cog fa-spin"></i></span>
+  <span class="label label-default" ng-show="player.vote === true"><i class="fa fa-fw fa-inbox"></i></span>
+  <span class="label label-success" ng-show="player.vote === 'accept'"><i class="fa fa-fw fa-check-circle"></i></span>
+  <span class="label label-danger" ng-show="player.vote === 'reject'"><i class="fa fa-fw fa-times-circle"></i></span>
+  <span class="label label-primary" ng-show="player.onMission">On Mission</span>
+</player-table>
+
+<score-board></score-board>
+
+<h3>Tip</h3>
+<p>
+  It is time to vote on whether or not you think this is a good team to send on the next
+  mission.
+</p>
+<p>
+  The results of the vote will be revealed after everyone has cast their vote.
+</p>

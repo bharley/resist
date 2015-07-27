@@ -1,0 +1,23 @@
+<h1 class="text-center">The Resistance</h1>
+
+<player-table>
+  <span class="label label-success" ng-show="player.vote === 'accept'"><i class="fa fa-fw fa-check-circle"></i></span>
+  <span class="label label-danger" ng-show="player.vote === 'reject'"><i class="fa fa-fw fa-times-circle"></i></span>
+  <span class="label label-primary" ng-show="player.onMission">On Mission <i class="fa fa-fw fa-cog fa-spin"></i></span>
+</player-table>
+
+<score-board></score-board>
+
+<h3>Tip</h3>
+<div ng-show="game.onMission">
+  <p>
+    You have played your part in the mission. Now you must wait for the rest of your team
+    to report in.
+  </p>
+</div>
+<div ng-show="!game.onMission">
+  <p>
+    The team is attempting to run a mission against the Imperial government. You must patiently
+    wait for everyone to report back before the outcome of the mission can be determined.
+  </p>
+</div>
