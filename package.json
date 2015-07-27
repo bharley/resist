@@ -5,7 +5,10 @@
   "main": "server.coffee",
   "scripts": {
     "start": "./node_modules/.bin/coffee server.coffee",
-    "test": "./node_modules/.bin/mocha --recursive --reporter spec --compilers coffee:coffee-script/register"
+    "test": "./node_modules/.bin/mocha --recursive --reporter spec --compilers coffee:coffee-script/register",
+    "start-dev": "./node_modules/.bin/supervisor -w src/server,src/assets/coffee/shared.coffee server.coffee",
+    "g": "./node_modules/.bin/gulp",
+    "gw": "./node_modules/.bin/gulp watch"
   },
   "repository": {
     "type": "git",
@@ -38,6 +41,8 @@
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.2.0",
     "mocha": "*",
-    "sort-stream": "^1.0.1"
+    "node-sass": "^3.2.0",
+    "sort-stream": "^1.0.1",
+    "supervisor": "^0.7.1"
   }
 }
