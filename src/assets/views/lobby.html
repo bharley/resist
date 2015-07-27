@@ -1,0 +1,65 @@
+<h1 class="text-center">The Resistance</h1>
+<h2>Game Lobby</h2>
+<div ng-show="lobby.players === null">
+  Loading...
+</div>
+<div ng-show="lobby.players === false">
+  Something went wrong!
+</div>
+<div ng-show="lobby.players">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Players
+          <span class="text-muted">
+            ({{ lobby.players|objLength }}/10<span ng-show="(lobby.players|objLength) < 5">
+              &ndash; Need at least 5 players
+            </span>)
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="player in lobby.players">
+        <td>
+          <i class="fa fa-fw fa-circle" ng-class="{'text-success': player.ready, 'text-muted': !player.ready}"></i>
+          {{ player.name }}
+          <button ng-click="lobby.changeName()" class="btn btn-link btn-xs" ng-if="player.id === lobby.playerId" ng-show="!player.ready">
+            <i class="fa fa-pencil"></i>
+          </button>
+          <span class="text-muted" ng-if="player.id === lobby.playerId">(You)</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button ng-click="lobby.toggleReady()" class="btn btn-block btn-lg" ng-class="{'btn-info': !lobby.ready, 'btn-default': lobby.ready}">
+    {{ lobby.ready ? "I'm Not Ready" : "I'm Ready" }}
+  </button>
+
+  <h2>About</h2>
+  <p>
+    <a href="https://en.wikipedia.org/wiki/The_Resistance_(game)" target="_blank">The Resistance</a>
+    is a fun, quick(ish) game that requires cooperation and deception. This is a hastily thrown-together
+    web game based on the board game.
+  </p>
+</div>
+
+<script type="text/ng-template" id="changeNameModal">
+  <form ng-submit="modal.changeName()">
+    <div class="modal-header">
+      <h3 class="modal-title">Edit Name</h3>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="lobbyName">Name</label>
+        <input type="text" class="form-control" id="playerName" ng-model="modal.name" placeholder="Name" required="required">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">OK</button>
+      <button type="button" class="btn" ng-click="modal.cancel()">Cancel</button>
+    </div>
+  </form>
+</script>

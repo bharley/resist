@@ -1,0 +1,149 @@
+<h1 class="text-center">The Resistance</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th colspan="2">Players</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="player in game.players">
+      <td>
+        <i class="fa fa-fw" ng-class="{'fa-user': player.role === 'resistance', 'fa-user-secret': player.role === 'spy'}"></i>
+        {{ player.name }}
+        <i class="fa fa-fw" ng-class="{'fa-star': player.leader}"></i>
+        <span class="text-muted" ng-if="player.id === game.playerId">(You)</span>
+      </td>
+      <td>
+        <button type="button" ng-click="game.pickMember(player.id)" class="btn btn-xs" ng-show="game.isLeader() && (player.onMission || !game.teamFull()) && game.state === game.shared.STATE.TEAM_SELECT" ng-class="{'btn-primary': !player.onMission, 'btn-default': player.onMission}">
+          {{ player.onMission ? 'Remove from' : 'Put on' }} Mission
+        </button>
+        <span class="label label-primary" ng-show="player.onMission && (!game.isLeader() || game.state !== game.shared.STATE.TEAM_SELECT)">On Mission</span>
+        <span class="label" ng-show="player.vote" ng-class="{'label-success': player.vote === true || player.vote === 'accept', 'label-danger': player.vote === 'reject'}">
+          {{ player.vote === true ? 'Voted' : (player.vote === 'accept' ? 'Accepted' : 'Rejected') }}
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<button type="button" ng-click="game.lockTeam()" class="btn btn-block btn-lg" ng-show="game.isLeader() && game.state === game.shared.STATE.TEAM_SELECT" ng-disabled="!game.teamFull()">
+  <span ng-show="game.teamFull()">
+    Lock Team
+  </span>
+  <span ng-show="!game.teamFull()">
+    Pick {{ game.teamSize() - game.getTeam().length }} more mission member{{ game.teamSize() - game.getTeam().length === 1 ? '' : 's' }}
+  </span>
+</button>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th ng-repeat="i in game.getRange(5)">{{ i }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Votes</th>
+      <td ng-repeat="i in game.getRange(5)">
+        <i class="fa fa-fw" ng-class="{'fa-times-circle': i <= game.votes}"></i>
+      </td>
+    </tr>
+    <tr>
+      <th>Mission</th>
+      <td ng-repeat="i in game.getRange(5)">
+        <i class="fa fa-fw"></i>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 ng-show="game.showTip()">Tip</h3>
+<div ng-show="game.state === game.shared.STATE.TEAM_SELECT">
+  <div ng-show="game.isLeader()">
+    <p>
+      You are the leader for this mission. It's your job to build a team of {{ game.teamSize() }} resistence
+      members to make a run at the Imperial government.
+    </p>
+    <p ng-show="!game.isSpy()">
+      Try to assemble a team without spies!
+    </p>
+  </div>
+  <div ng-show="!game.isLeader()">
+    <p>
+      Your leader is currently assembling a team to go on the next mission against the Imperial government.
+      After he or she does so, you will be given a chance to vote on the team.
+    </p>
+  </div>
+</div>
+<div ng-show="game.state === game.shared.STATE.POST_TEAM_VOTE">
+  <div ng-show="game.voteSuccess">
+    <p>
+      The vote has succeeded and the selected team is going on the mission. The mission will begin in roughly
+      10 seconds.
+    </p>
+  </div>
+  <div ng-show="!game.voteSuccess">
+    <p>
+      The vote has failed and the selected team will not be going on the mission. The next leader will be chosen
+      in about 10 seconds.
+    </p>
+  </div>
+</div>
+
+
+<script type="text/ng-template" id="introModal">
+  <div class="modal-header">
+    <h3 class="modal-title">Introduction</h3>
+  </div>
+  <div class="modal-body" ng-show="!isSpy">
+    <p>
+      Welcome to The Resistance. Your goal is to overthrow the Imperial government by succeeding in <b>three</b>
+      missions against the government.
+    </p>
+    <p>
+      Be warned, however, that there are spies amongst us. Our intelligence has informed us of the existance
+      of {{ spyCount }} spies, but we do not know their identities. Choose your mission teams wisely.
+    </p>
+    <p>
+      Spies may also win by sowing enough discontent to cause the fifth consecutive mission vote to fail, so do
+      not panic.
+    </p>
+  </div>
+  <div class="modal-body" ng-show="isSpy">
+    <p>
+      Welcome to The Resistance. You are a proud Imperial Spy, and your goal is to sabbotage the rebellion
+      against the government.
+    </p>
+    <p>
+      {{ spyCount - 1 }} other loyal {{ spyCount === 2 ? 'spy is' : 'spies are' }} with you on your mission. Guard
+      their identit{{ spyCount === 2 ? 'y' : 'ies' }}, and sabbotage <b>three</b> rebbel missions without revealing
+      yourselves.
+    </p>
+    <p>
+      Spies may also win by sowing enough discontent to cause the fifth consecutive mission vote to fail.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="modal.close()">OK</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="voteModal">
+  <div class="modal-header">
+    <h3 class="modal-title">Mission Team Vote</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+      Vote on whether or not you accept the team composition:
+    </p>
+    <ul>
+      <li ng-repeat="member in modal.team">{{ member }}</li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="modal.accept()">Accept Team</button>
+    <button type="submit" class="btn btn-danger" ng-click="modal.reject()">Reject Team</button>
+  </div>
+</script>
